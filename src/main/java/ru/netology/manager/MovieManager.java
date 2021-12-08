@@ -4,28 +4,43 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.netology.domain.MoviePoster;
+import ru.netology.repository.MovieRepository;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class MovieManager {
-    private MoviePoster[] movies = new MoviePoster[0];
+    private MovieRepository repository;
     private int limitMovie = 10;
+
+    public MovieManager(MovieRepository repository) {
+        this.repository = repository;
+    }
 
     public MovieManager(int limitMovie) {
         this.limitMovie = limitMovie;
     }
 
     public void save(MoviePoster movie) {
-        int length = movies.length + 1;
-        MoviePoster[] tmp = new MoviePoster[length];
-        System.arraycopy(movies, 0, tmp, 0, movies.length);
-        int lastIndex = tmp.length - 1;
-        tmp[lastIndex] = movie;
-        movies = tmp;
+        repository.save(movie);
+    }
+
+    public MoviePoster[] findById(int id) {
+        repository.findById(id);
+
+        return new MoviePoster[0];
+    }
+
+    public void removeById(int id) {
+        repository.removeById(id);
+    }
+
+    public void remoteAll() {
+        repository.removeAll();
     }
 
     public MoviePoster[] getLastAdd() {
+        MoviePoster[] movies = repository.findAll();
         int resultLength;
         if (movies.length < limitMovie) {
             resultLength = movies.length;
@@ -40,6 +55,7 @@ public class MovieManager {
         return result;
     }
 }
+
 
 
 
